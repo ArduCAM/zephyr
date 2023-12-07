@@ -63,6 +63,7 @@ arc	Synopsys, Inc. (formerly ARC International PLC)
 arctic	Arctic Sand
 arcx	arcx Inc. / Archronix Inc.
 arduino	Arduino
+arducam	ARDUCAM TECHNOLOGY CO., LIMITED
 aries	Aries Embedded GmbH
 arm	ARM Ltd.
 armadeus	ARMadeus Systems SARL
