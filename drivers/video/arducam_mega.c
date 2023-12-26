@@ -1,26 +1,7 @@
 /**
- * The MIT License (MIT)
+ * Copyright (c) 2023 Arducam Technology co., Ltd. <www.arducam.com>
  *
- * Copyright 2021 Arducam Technology co., Ltd. All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE
- *
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #define DT_DRV_COMPAT arducam_mega
@@ -31,7 +12,6 @@
 #include <zephyr/drivers/video.h>
 #include <zephyr/drivers/spi.h>
 
-#define LOG_LEVEL CONFIG_LOG_DEFAULT_LEVEL
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(mega_camera);
 
@@ -125,28 +105,28 @@ struct arducam_mega_data {
 	uint8_t stream_on;
 };
 
-static struct arducam_mega_info mega_infos[] = {{
-							.support_resoultion = 7894,
-							.support_special_effects = 63,
-							.exposure_value_max = 30000,
-							.exposure_value_min = 1,
-							.gain_value_max = 1023,
-							.gain_value_min = 1,
-							.enable_focus = 1,
-							.enable_sharpness = 0,
-							.device_address = 0x78,
-						},
-						{
-							.support_resoultion = 7638,
-							.support_special_effects = 319,
-							.exposure_value_max = 30000,
-							.exposure_value_min = 1,
-							.gain_value_max = 1023,
-							.gain_value_min = 1,
-							.enable_focus = 0,
-							.enable_sharpness = 1,
-							.device_address = 0x78,
-						}};
+const static struct arducam_mega_info mega_infos[] = {{
+							      .support_resoultion = 7894,
+							      .support_special_effects = 63,
+							      .exposure_value_max = 30000,
+							      .exposure_value_min = 1,
+							      .gain_value_max = 1023,
+							      .gain_value_min = 1,
+							      .enable_focus = 1,
+							      .enable_sharpness = 0,
+							      .device_address = 0x78,
+								},
+								{
+							      .support_resoultion = 7638,
+							      .support_special_effects = 319,
+							      .exposure_value_max = 30000,
+							      .exposure_value_min = 1,
+							      .gain_value_max = 1023,
+							      .gain_value_min = 1,
+							      .enable_focus = 0,
+							      .enable_sharpness = 1,
+							      .device_address = 0x78,
+						      }};
 
 #define ARDUCAM_MEGA_VIDEO_FORMAT_CAP(width, height, format)                                       \
 	{                                                                                          \
