@@ -97,7 +97,7 @@ enum MEGA_SHARPNESS_LEVEL {
 };
 
 /**
- * @enum CAM_COLOR_FX
+ * @enum MEGA_COLOR_FX
  * @brief Configure special effects
  */
 enum MEGA_COLOR_FX {
@@ -124,6 +124,10 @@ enum MEGA_WHITE_BALANCE {
 	MEGA_WHITE_BALANCE_MODE_HOME,        /**< Home */
 };
 
+/**
+ * @enum MEGA_IMAGE_QUALITY
+ * @brief Configure JPEG image quality
+ */
 enum MEGA_IMAGE_QUALITY {
 	HIGH_QUALITY = 0,
 	DEFAULT_QUALITY = 1,
@@ -172,6 +176,10 @@ enum MEGA_RESOULTION {
 	MEGA_RESOULTION_NONE,
 };
 
+/**
+ * @struct arducam_mega_info
+ * @brief Some information about mega camera
+ */
 struct arducam_mega_info {
 	int support_resoultion;
 	int support_special_effects;

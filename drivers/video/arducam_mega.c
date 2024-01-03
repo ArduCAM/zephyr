@@ -858,22 +858,6 @@ static int arducam_mega_get_caps(const struct device *dev, enum video_endpoint_i
 	return 0;
 }
 
-#ifdef CONFIG_POLL
-static int arducam_mega_set_signal(const struct device *dev, enum video_endpoint_id ep,
-				   struct k_poll_signal *signal)
-{
-	struct arducam_mega_data *data = dev->data;
-
-	if (data->signal && signal != NULL) {
-		return -EALREADY;
-	}
-
-	data->signal = signal;
-
-	return 0;
-}
-#endif
-
 static int arducam_mega_set_ctrl(const struct device *dev, unsigned int cid, void *value)
 {
 	int ret = 0;
@@ -972,9 +956,6 @@ static const struct video_driver_api arducam_mega_driver_api = {
 	.get_ctrl = arducam_mega_get_ctrl,
 	.enqueue = arducam_mega_enqueue,
 	.dequeue = arducam_mega_dequeue,
-#ifdef CONFIG_POLL
-	.set_signal = arducam_mega_set_signal,
-#endif
 };
 
 static int arducam_mega_init(const struct device *dev)
