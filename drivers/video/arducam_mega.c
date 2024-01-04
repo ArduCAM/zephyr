@@ -128,6 +128,7 @@ static struct arducam_mega_info mega_infos[] = {{
 							.device_address = 0x78,
 						}};
 
+
 #define ARDUCAM_MEGA_VIDEO_FORMAT_CAP(width, height, format)                                       \
 	{                                                                                          \
 		.pixelformat = (format), .width_min = (width), .width_max = (width),               \
