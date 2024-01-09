@@ -33,11 +33,11 @@ extern "C" {
  * @name Control classes
  * @{
  */
-#define VIDEO_CTRL_CLASS_GENERIC	0x00000000	/**< Generic class controls */
-#define VIDEO_CTRL_CLASS_CAMERA		0x00010000	/**< Camera class controls */
-#define VIDEO_CTRL_CLASS_MPEG		0x00020000	/**< MPEG-compression controls */
-#define VIDEO_CTRL_CLASS_JPEG		0x00030000	/**< JPEG-compression controls */
-#define VIDEO_CTRL_CLASS_VENDOR		0xFFFF0000	/**< Vendor-specific class controls */
+#define VIDEO_CTRL_CLASS_GENERIC 0x00000000 /**< Generic class controls */
+#define VIDEO_CTRL_CLASS_CAMERA  0x00010000 /**< Camera class controls */
+#define VIDEO_CTRL_CLASS_MPEG    0x00020000 /**< MPEG-compression controls */
+#define VIDEO_CTRL_CLASS_JPEG    0x00030000 /**< JPEG-compression controls */
+#define VIDEO_CTRL_CLASS_VENDOR  0xFFFF0000 /**< Vendor-specific class controls */
 /**
  * @}
  */
@@ -47,9 +47,9 @@ extern "C" {
  * @{
  */
 /** Mirror the picture horizontally */
-#define VIDEO_CID_HFLIP			(VIDEO_CTRL_CLASS_GENERIC + 0)
+#define VIDEO_CID_HFLIP (VIDEO_CTRL_CLASS_GENERIC + 0)
 /** Mirror the picture vertically */
-#define VIDEO_CID_VFLIP			(VIDEO_CTRL_CLASS_GENERIC + 1)
+#define VIDEO_CID_VFLIP (VIDEO_CTRL_CLASS_GENERIC + 1)
 /**
  * @}
  */
@@ -58,15 +58,31 @@ extern "C" {
  * @name Camera class control IDs
  * @{
  */
-#define VIDEO_CID_CAMERA_EXPOSURE	(VIDEO_CTRL_CLASS_CAMERA + 0)
-#define VIDEO_CID_CAMERA_GAIN		(VIDEO_CTRL_CLASS_CAMERA + 1)
-#define VIDEO_CID_CAMERA_ZOOM		(VIDEO_CTRL_CLASS_CAMERA + 2)
-#define VIDEO_CID_CAMERA_BRIGHTNESS	(VIDEO_CTRL_CLASS_CAMERA + 3)
-#define VIDEO_CID_CAMERA_SATURATION	(VIDEO_CTRL_CLASS_CAMERA + 4)
-#define VIDEO_CID_CAMERA_WHITE_BAL	(VIDEO_CTRL_CLASS_CAMERA + 5)
-#define VIDEO_CID_CAMERA_CONTRAST	(VIDEO_CTRL_CLASS_CAMERA + 6)
-#define VIDEO_CID_CAMERA_COLORBAR	(VIDEO_CTRL_CLASS_CAMERA + 7)
-#define VIDEO_CID_CAMERA_QUALITY	(VIDEO_CTRL_CLASS_CAMERA + 8)
+#define VIDEO_CID_CAMERA_EXPOSURE_AUTO (VIDEO_CTRL_CLASS_CAMERA + 0)
+#define VIDEO_CID_CAMERA_EXPOSURE      (VIDEO_CTRL_CLASS_CAMERA + 1)
+
+#define VIDEO_CID_CAMERA_GAIN_AUTO (VIDEO_CTRL_CLASS_CAMERA + 2)
+#define VIDEO_CID_CAMERA_GAIN      (VIDEO_CTRL_CLASS_CAMERA + 3)
+
+#define VIDEO_CID_CAMERA_ZOOM       (VIDEO_CTRL_CLASS_CAMERA + 4)
+#define VIDEO_CID_CAMERA_BRIGHTNESS (VIDEO_CTRL_CLASS_CAMERA + 5)
+#define VIDEO_CID_CAMERA_SATURATION (VIDEO_CTRL_CLASS_CAMERA + 6)
+
+#define VIDEO_CID_CAMERA_WHITE_BAL_AUTO (VIDEO_CTRL_CLASS_CAMERA + 7)
+#define VIDEO_CID_CAMERA_WHITE_BAL      (VIDEO_CTRL_CLASS_CAMERA + 8)
+
+#define VIDEO_CID_CAMERA_CONTRAST (VIDEO_CTRL_CLASS_CAMERA + 9)
+#define VIDEO_CID_CAMERA_COLORBAR (VIDEO_CTRL_CLASS_CAMERA + 10)
+#define VIDEO_CID_CAMERA_QUALITY  (VIDEO_CTRL_CLASS_CAMERA + 11)
+/**
+ * @}
+ */
+
+/**
+ * @name JPEG-compression class control IDs
+ * @{
+ */
+#define VIDEO_CID_JPEG_COMPRESSION_QUALITY (VIDEO_CTRL_CLASS_JPEG + 0)
 /**
  * @}
  */
@@ -76,7 +92,6 @@ extern "C" {
 #endif
 
 /* Controls */
-
 
 /**
  * @}

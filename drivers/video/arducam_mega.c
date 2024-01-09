@@ -410,17 +410,17 @@ static int arducam_mega_set_output_format(const struct device *dev, int output_f
 	return ret;
 }
 
-static int arducam_mega_set_quality(const struct device *dev, enum MEGA_IMAGE_QUALITY qs)
+static int arducam_mega_set_JPEG_quality(const struct device *dev, enum MEGA_IMAGE_QUALITY qc)
 {
 	int ret = 0;
 	const struct arducam_mega_config *cfg = dev->config;
 	struct arducam_mega_data *drv_data = dev->data;
 
-	LOG_DBG("%s: %d", __func__, qs);
+	LOG_DBG("%s: %d", __func__, qc);
 	if (drv_data->fmt.pixelformat == VIDEO_PIX_FMT_JPEG) {
 		ret |= arducam_mega_await_bus_idle(&cfg->bus, 3);
-		/* Write QS register */
-		ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_IMAGE_QUALITY, qs);
+		/* Write QC register */
+		ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_IMAGE_QUALITY, qc);
 	} else {
 		LOG_ERR("Image format not support setting the quality");
 		return -ENOTSUP;
@@ -441,7 +441,7 @@ static int arducam_mega_set_white_bal_enable(const struct device *dev, int enabl
 		reg |= 0x80;
 	}
 	reg |= CTR_WHITEBALANCE;
-	/* Update CTRL1 to enable/disable automatic white balance*/
+	/* Update register to enable/disable automatic white balance*/
 	ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_EXPOSURE_GAIN_WHITEBAL_ENABLE, reg);
 
 	ret |= arducam_mega_await_bus_idle(&cfg->bus, 10);
@@ -477,7 +477,7 @@ static int arducam_mega_set_gain_enable(const struct device *dev, int enable)
 		reg |= 0x80;
 	}
 	reg |= CTR_GAIN;
-	/* Update CTRL1 to enable/disable automatic gain*/
+	/* Update register to enable/disable automatic gain*/
 	ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_EXPOSURE_GAIN_WHITEBAL_ENABLE, reg);
 
 	ret |= arducam_mega_await_bus_idle(&cfg->bus, 10);
@@ -497,6 +497,7 @@ static int arducam_mega_set_lowpower_enable(const struct device *dev, int enable
 		enable = !enable;
 	}
 
+	ret |= arducam_mega_await_bus_idle(&cfg->bus, 3);
 	if (enable) {
 		ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_POWER_CONTROL, 0x07);
 	} else {
@@ -531,12 +532,11 @@ static int arducam_mega_set_exposure_enable(const struct device *dev, int enable
 	if (enable) {
 		reg |= 0x80;
 	}
-	reg |= CTR_GAIN;
+	reg |= CTR_EXPOSURE;
 	/* Enable/disable automatic exposure control */
 	ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_EXPOSURE_GAIN_WHITEBAL_ENABLE, reg);
 
 	ret |= arducam_mega_await_bus_idle(&cfg->bus, 10);
-
 	return ret;
 }
 
@@ -554,7 +554,6 @@ static int arducam_mega_set_exposure(const struct device *dev, uint32_t value)
 	ret |= arducam_mega_await_bus_idle(&cfg->bus, 10);
 	ret |= arducam_mega_write_reg(&cfg->bus, CAM_REG_MANUAL_EXPOSURE_BIT_7_0, value & 0xff);
 	ret |= arducam_mega_await_bus_idle(&cfg->bus, 10);
-
 	return ret;
 }
 
@@ -723,7 +722,7 @@ static int arducam_mega_capture(const struct device *dev, uint32_t *length)
 	uint8_t tries = 200;
 
 	if (drv_data->stream_on) {
-		LOG_ERR("Camera is already on!");
+		LOG_INF("Camera is already on!");
 		return -1;
 	}
 
@@ -810,10 +809,6 @@ static void __buffer_work(struct k_work *work)
 
 	k_fifo_put(&drv_data->fifo_out, vbuf);
 
-	if (IS_ENABLED(CONFIG_POLL) && drv_data->signal) {
-		k_poll_signal_raise(drv_data->signal, VIDEO_BUF_DONE);
-	}
-
 	k_yield();
 }
 
@@ -863,8 +858,14 @@ static int arducam_mega_set_ctrl(const struct device *dev, unsigned int cid, voi
 	int ret = 0;
 
 	switch (cid) {
+	case VIDEO_CID_CAMERA_EXPOSURE_AUTO:
+		ret |= arducam_mega_set_exposure_enable(dev, *(uint8_t *)value);
+		break;
 	case VIDEO_CID_CAMERA_EXPOSURE:
 		ret |= arducam_mega_set_exposure(dev, *(uint32_t *)value);
+		break;
+	case VIDEO_CID_CAMERA_GAIN_AUTO:
+		ret |= arducam_mega_set_gain_enable(dev, *(uint8_t *)value);
 		break;
 	case VIDEO_CID_CAMERA_GAIN:
 		ret |= arducam_mega_set_gain(dev, *(uint16_t *)value);
@@ -875,14 +876,17 @@ static int arducam_mega_set_ctrl(const struct device *dev, unsigned int cid, voi
 	case VIDEO_CID_CAMERA_SATURATION:
 		ret |= arducam_mega_set_saturation(dev, *(enum MEGA_SATURATION_LEVEL *)value);
 		break;
+	case VIDEO_CID_CAMERA_WHITE_BAL_AUTO:
+		ret |= arducam_mega_set_white_bal_enable(dev, *(uint8_t *)value);
+		break;
 	case VIDEO_CID_CAMERA_WHITE_BAL:
 		ret |= arducam_mega_set_white_bal(dev, *(enum MEGA_WHITE_BALANCE *)value);
 		break;
 	case VIDEO_CID_CAMERA_CONTRAST:
 		ret |= arducam_mega_set_contrast(dev, *(enum MEGA_CONTRAST_LEVEL *)value);
 		break;
-	case VIDEO_CID_CAMERA_QUALITY:
-		ret |= arducam_mega_set_quality(dev, *(enum MEGA_IMAGE_QUALITY *)value);
+	case VIDEO_CID_JPEG_COMPRESSION_QUALITY:
+		ret |= arducam_mega_set_JPEG_quality(dev, *(enum MEGA_IMAGE_QUALITY *)value);
 		break;
 	case VIDEO_CID_ARDUCAM_EV:
 		ret |= arducam_mega_set_EV(dev, *(enum MEGA_EV_LEVEL *)value);
@@ -895,15 +899,6 @@ static int arducam_mega_set_ctrl(const struct device *dev, unsigned int cid, voi
 		break;
 	case VIDEO_CID_ARDUCAM_COLOR_FX:
 		ret |= arducam_mega_set_special_effects(dev, *(enum MEGA_COLOR_FX *)value);
-		break;
-	case VIDEO_CID_ARDUCAM_AUTO_WHITE_BAL:
-		ret |= arducam_mega_set_white_bal_enable(dev, *(uint8_t *)value);
-		break;
-	case VIDEO_CID_ARDUCAM_AUTO_EXPOSURE:
-		ret |= arducam_mega_set_exposure_enable(dev, *(uint8_t *)value);
-		break;
-	case VIDEO_CID_ARDUCAM_AUTO_GAIN:
-		ret |= arducam_mega_set_gain_enable(dev, *(uint8_t *)value);
 		break;
 	case VIDEO_CID_ARDUCAM_RESET:
 		ret |= arducam_mega_soft_reset(dev);
