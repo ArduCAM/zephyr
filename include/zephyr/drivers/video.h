@@ -114,6 +114,8 @@ struct video_buffer {
 	 * endpoints.
 	 */
 	uint32_t timestamp;
+	/** Optional additional user data for fragmented frames. */
+	void *user_data;
 };
 
 /**
